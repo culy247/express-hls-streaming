@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Main</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <% include ./top.ejs %>
+    <hr>
+    <div class="container">
+        <div>
+            <div class="card">
+                <div class="row no-gutters">
+                  <div class="col-md-2">
+                    <img width="100%" src="/hls/<%=video_group.unique_id%>/<%=video_group.img%>">
+                  </div>
+                  <div class="col-md-10">
+                    <div class="card-body">
+                        <h4 class="text-secondary">Video Group Info</h4>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Service YN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><%=video_group.title%></td>
+                                    <td style="text-align: center;">
+                                        <% if(video_group.service_yn) { %>
+                                            <font class="text-primary font-weight-bold">ON AIR</font>
+                                        <% } else { %>
+                                            <font class="text-danger font-weight-bold">STOP</font>
+                                        <% } %>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div>
+            <h3 class="font-weight-bold text-primary">New Video</h3>
+            <hr>
+            <form id="videoInsertForm" method="POST" action='/insertVideo'>
+                <input type="hidden" name="video_group_unique_id" value="<%=video_group.unique_id%>">
+                <div>
+                    <h4 class="text-primary">title</h4>
+                    <textarea class="form-control" id="title" name="title" rows="2"></textarea>
+                </div>
+                <hr>
+                <div>
+                    <h4 class="text-primary">subscript</h4>
+                    <textarea class="form-control" id="subscript" name="subscript" rows="2"></textarea>
+                </div>
+                <hr>
+                <div>
+                    <h4 class="text-primary">video path</h4>
+                    <input class="form-control" type="text" id="video_path" name="video_path">
+                </div>
+                <hr>
+                <div>
+                    <h4 class="text-primary">Release Date</h4>
+                    <input class="form-control" type="date" id="release_date" name="release_date"/>
+                </div>
+                <hr>
+                <input style="margin:auto; display:block;" class="btn btn-primary btn-lg btn-block" type="button" value="submit" onclick="videoInsertValid()">
+            </form>
+        </div>
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="/public/js/common.js"></script>
+
+</html>

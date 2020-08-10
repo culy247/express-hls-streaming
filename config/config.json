@@ -1,0 +1,28 @@
+{
+  "development": {
+    "username": "root",
+    "password": "root",
+    "database": "express_hls_streaming_dev",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "dialectOptions": {
+      "charset": "utf8mb4",
+      "dateStrings": true,
+      "typeCast": true
+    }
+  },
+  "test": {
+    "username": "root",
+    "password": "root",
+    "database": "express_hls_streaming_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": "root",
+    "database": "express_hls_streaming_prod",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Main</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <% include ./top.ejs %>
+    <hr>
+    <div class="container">
+        <form method="POST" action="/insertVideoGroup" enctype="multipart/form-data" onsubmit="return videoGroupValid('insert')">
+            <h3 class="font-weight-bold text-primary">New VideoGroup</h3>
+            <hr>
+            <div>
+                <h4 class="text-dark">Title</h4>
+                <textarea class="form-control" id="title" name="title" rows="3"></textarea>
+            </div>
+            <hr>
+            <div>
+                <h4 class="text-dark">Thumbnail Image</h4>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <label class="font-weight-bold text-secondary">Preview</label>
+                                <img id='img_view' style="max-width: 100%;" src="/public/images/defaut_img.png" onerror="this.src='/public/images/defaut_img.png'">
+                            </div>
+                            <div class="col-sm-8">
+                                <label class="font-weight-bold text-secondary">Img Select</label>
+                                <input type="file" class="form-control" id="img" name="img" onchange="img_preview(this)" accept="image/png, image/jpeg">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div>
+                <h4 class="text-dark">Category</h4>
+                <select class="form-control" id="category_selector" onchange="container_loader('category', this)">
+                    <option value selected>- select -</option>
+                    <% categories.forEach((category) => {%>
+                    <option value="<%=category.id%>"><%=category.name%></option>
+                    <% }); %>
+                </select>
+                <hr>
+                <div class="card border-secondary" style="min-height: 120px; padding:10px">
+                    <ul class="list-group" id="category_container"></ul>
+                </div>
+            </div>
+            <hr>
+            <div>
+                <h4 class="text-dark">Tag</h4>
+                <select class="form-control" id="tag_selector" onchange="container_loader('tag', this)">
+                    <option value selected>- select -</option>
+                    <% tags.forEach((tag) => {%>
+                    <option value="<%=tag.id%>"><%=tag.name%></option>
+                    <% }); %>
+                </select>
+                <hr>
+                <div class="card border-secondary" style="min-height: 120px; padding:10px">
+                    <ul class="list-group" id="tag_container"></ul>
+                </div>                
+            </div>
+            <hr>
+            <!-- submit -->
+            <input style="margin:auto; display:block;" class="btn btn-primary btn-lg btn-block" type="submit" value="Submit">
+        </form>
+    </div>
+</body>
+<script src="/public/js/common.js"></script>
+<script>
+    //등록된 태그, 카테고리가 없으면 이전 페이지로 되돌려보냄
+    window.onload = (() => {
+        var tags_length = '<%=tags.length%>';
+        var categories_length = '<%=categories.length%>';
+
+        if (categories_length === '0') {
+            alert('You Must Add Category.');
+            window.history.back();
+            return;
+        }
+
+        if (tags_length === '0') {
+            alert('You Must Add Tag.');
+            window.history.back();
+            return;
+        }
+    });
+</script>
+
+</html>

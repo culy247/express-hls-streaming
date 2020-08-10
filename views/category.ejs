@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Main</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <% include ./top.ejs %>
+    <hr>
+    <div class="container">
+        <h3 class="font-weight-bold text-primary">Category List</h3>
+        <hr>
+        <div class="card" style="margin-bottom: 50px;">
+            <div class="card-body">
+                <h5 class="text-secondary">New Category</h5>
+                <form id='categoryInsertForm' method='POST' action='/insertCategory' >
+                    <div class="input-group">
+                        <input type='text' class="form-control" name='name' />
+                        <div class="input-group-append">
+                            <input type='button' class="btn btn-outline-primary" value='Add Category' onclick='categoryInsertSubmit()'>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Category Name</th>
+                        <th>Used Group Count</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if(categories === null){ %>
+                    <td colspan="4">
+                        <div class="jumbotron jumbotron-fluid">
+                            <div class="container">
+                                <h1 class="display-4">No Categories</h1>
+                                <p class="lead">Please Add Category</p>
+                            </div>
+                        </div>
+                    </td>
+                    <% } else { %>
+                    <% categories.forEach(category => { %>
+                    <tr>
+                        <td>
+                            <span id="span_<%= category['category'].id %>">
+                                <a href="/videoGroup/category/<%= category['category'].id %>"><%= category['category'].name %></a>
+                            </span>
+                            <input type="text" hidden class="form-control" id="input_<%=category['category'].id %>" value="<%= category['category'].name %>">
+                        </td>
+                        <td><%= category['usedCount'] %></td>
+                        <td>
+                            <input type="button" id="btn_edit_<%= category['category'].id %>" class="btn btn-outline-primary" onclick='ctNameEdit(<%= category['category'].id %>)' value="Edit">
+                            <div class="btn-group-vertical">
+                                <input type="button" hidden id="btn_cancel_<%=category['category'].id %>" class="btn btn-outline-warning" hidden onclick="ctNameEditCancel(<%=category['category'].id %>)" value="Cancel">
+                                <input type="button" hidden id="btn_submit_<%=category['category'].id %>" hidden class="btn btn-outline-success" onclick="categoryUpdateSubmit(<%=category['category'].id %>)" value="Submit">
+                            </div>
+                        </td>
+                        <td>
+                            <input type="button" class="btn btn-outline-danger" onclick="categoryDelete(<%=category['category'].id %>, '<%=category['category'].name %>')" value="delete">
+                        </td>
+                    </tr>
+                    <% }); %>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="/public/js/common.js"></script>
+
+</html>
