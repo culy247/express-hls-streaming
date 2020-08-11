@@ -52,6 +52,7 @@ Database access information is managed in config/config.json.<br/>
 <img src="./imgs/sample_17.jpg"/><br/>
 If you have corrected the connection information, you should proceed with database migration.<br/>
 <pre><code>
+sequelize db:create
 sequelize db:migrate
 sequelize db:seed:all
 </pre></code>
