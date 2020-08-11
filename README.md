@@ -128,5 +128,5 @@ If you click the Copy hls Addr button, you can copy the stream url that you can 
 <br/><br/>
 <img src="./imgs/sample_15.jpg"></img><br/>
 Paste the copied address to a player that can play m3u8, such as vlc player.<br/><br/>
-<img src="./imgs/sample_16.jpg"></img><br/>
+<img src="./imgs/sample_16.gif"></img><br/>
 You can check that the streaming video plays normally.
