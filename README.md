@@ -35,7 +35,9 @@ git clone https://github.com/leekanghyo/express-hls-streaming.git
 - sequelize-cli: v5.5.1
 - mysql: v8.0.19
 <br/>
+
 * * *
+
 This project is based on nodejs, and the DB uses MySql.<br/>
 If you have not installed nodejs and MySql, please install it first.<br/>
 In this project, sequelize ORM is used to connect nodejs and MySql.<br/>
@@ -47,9 +49,8 @@ npm install --save-dev -g sequelize-cli
 <br/>
 Now you need to migrate your database. Before that, change the Mysql access information to suit your development environment.<br/>
 Database access information is managed in config/config.json.<br/>
-<img src="./imgs/sample_17.jpg"/><br/><br/>
-
-f you have corrected the connection information, you should proceed with database migration.<br/>
+<img src="./imgs/sample_17.jpg"/><br/>
+If you have corrected the connection information, you should proceed with database migration.<br/>
 <pre><code>
 sequelize db:migrate
 sequelize db:seed:all
