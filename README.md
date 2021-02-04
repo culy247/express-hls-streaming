@@ -1,5 +1,5 @@
 # express-hls-streaming
-## 1. What is it?
+## 1. What is this application
 <img src="./imgs/sample_1.jpg" width="100%"></img>
 This project is a server side HLS streaming management tool using expressjs, a nodejs based framework.<br/>
 Convert mp4 video to hls format using ffmpeg library.<br/><br/>
