@@ -24,7 +24,7 @@ This is the hls streaming flow chart of the project.<br/>
 
 ## 3. Git Repository Download
 <pre><code>
-git clone https://github.com/leekanghyo/express-hls-streaming.git
+git clone https://github.com/overload-dev/express-hls-streaming.git
 </pre></code>
 * * *
 ## 4. Install required packages
