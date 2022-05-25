@@ -3,66 +3,32 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var uuid4 =require('uuid4');
-
+require('dotenv').config()
 //router set
-var mainRouter = require('./routes/main');
 var videoRouter = require('./routes/video');
-var videoGroupRouter = require('./routes/videoGroup');
-var categoryRouter = require('./routes/category');
-var tagRouter = require('./routes/tag');
-
-var apiStreamRouter = require('./routes/api/stream');
-
-//use session
-var session = require('express-session');
 var cors = require('cors');
+const busboy = require('connect-busboy');
 
 var app = express();
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-
-//내부 참조용
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'hls')));
-
+app.use(busboy({
+  highWaterMark: 2 * 1024 * 1024, // Set 2MiB buffer
+}));
+app.set('view engine', 'ejs')
 //stream file storage
 app.use(cors());
 
-//use session
-app.use(session({
-  secret: uuid4(),
-  resave: false,
-  saveUninitialized: true
-}));
-
-var sequelize = require('./models/index').sequelize;
-sequelize.sync().then(() =>{
-  console.log('[DB Connection Success]');
-}).catch(err =>{
-  console.log('[DB Connection Error]');
-  console.log(err);
-});
-
-app.use(express.static(__dirname + '/'));
+app.use(express.static(__dirname + '/public'));
 
 //router use
-app.use('/', mainRouter);
-app.use('/',videoRouter);
-app.use('/', videoGroupRouter);
-app.use('/', categoryRouter);
-app.use('/', tagRouter);
-
-//api - stream request
-app.use('/api', apiStreamRouter);
-
+app.use('/api/',videoRouter);
+app.route('/').get((req, res) => {
+  res.sendFile(path.join(__dirname, '/public/index.html'));
+});
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

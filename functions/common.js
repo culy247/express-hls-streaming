@@ -1,52 +1,24 @@
 'use strict';
-const crypto = require('crypto');
-const disk = require('diskusage');
-const os = require('os');
 const fs = require('fs');
 const ffmpeg = require('fluent-ffmpeg');
+const vttGenerate = require('./vtt');
 //======================================================================
-//스트리밍 컨버팅 작업을 위한 socket
 const io = require("socket.io-client");
 const socket = io('http://localhost:3000');
-//======================================================================
 
-//using password...
-function encrypt(str) {
-    var hash = crypto.createHash('sha256').update(str).digest('base64');
-    return hash;
-}
-
-function systemInfo(callback) {
-    disk.check(`${__dirname}`, (err, diskSpace) =>{
-        let disk_info = {
-            free: (diskSpace.free / (1024 * 1024 * 1024)).toFixed(1),
-            total: (diskSpace.total / (1024 * 1024 * 1024)).toFixed(1)
-        }
-
-        let mem_info = { //memory, convert to gb data / (1024 * 1024 * 1024)
-            freemem: (os.freemem() / (1024 * 1024 * 1024)).toFixed(2),
-            totalmem: (os.totalmem().toFixed(2) / (1024 * 1024 * 1024)).toFixed(2)
-        };
-
-        let os_info = {
-            type: os.type(),
-            arch: os.arch(),
-            platform: os.platform()
-        };
-
-        let cpu_info = os.cpus();
-
-        callback({ os_info, mem_info, disk_info, cpu_info });
+async function generateThumbnail(path, options, callback) {
+    vttGenerate(path, options, function(err, metadata) {
+        //console.dir(metadata)
+        if( callback ){ callback(err, metadata) }
     });
 }
-
 //create stream file's
-function hlsConvert(path, video_group_unique_id, unique_id, m3u8_name, callback) {
+function hlsConvert(path, unique_id, m3u8_name, callback) {
     var path_split = path.split(/[/\,\\,//]/);
     var origin_f_name = path_split[path_split.length - 1];
 
-    ffmpegWorkSwitch(true, () => { //스트리밍 컨버트 작업 여부 true
-        createStreamFolder(`${video_group_unique_id}/${unique_id}`, () => {
+    ffmpegWorkSwitch(true, () => { 
+        createStreamFolder(`${unique_id}`, () => {
 
             ffmpeg(path).outputOptions([
                 '-profile:v', 'baseline',
@@ -56,7 +28,7 @@ function hlsConvert(path, video_group_unique_id, unique_id, m3u8_name, callback)
                 '-hls_list_size', '0',
                 '-f', 'hls'
             ])
-            .output(`./hls/${video_group_unique_id}/${unique_id}/${m3u8_name}.m3u8`)
+            .output(`./hls/${unique_id}/${m3u8_name}.m3u8`)
             .on('progress', function (progress) {
                 var data = {
                     log: `[Stream Convert]: ${origin_f_name} - ${m3u8_name}.m3u8 | ${progress.percent.toFixed(2)} % done`
@@ -67,13 +39,13 @@ function hlsConvert(path, video_group_unique_id, unique_id, m3u8_name, callback)
             .on('end', function (err, stdout, stderr) {
                 console.log('Finished processing!' /*, err, stdout, stderr*/);
                 console.log('create screen shot...');
-                //스크린샷 추출.. 영상 시작 10초에서 추출한다.
+                
                 ffmpeg(path).outputOptions([
                     '-f', 'image2',
                     '-t', '0.001',
                     '-ss', '10'
                 ])
-                .output(`./hls/${video_group_unique_id}/${unique_id}/${m3u8_name}.jpg`)
+                .output(`./hls/${unique_id}/${m3u8_name}.jpg`)
                 .on('progress', function (progress) {
                     console.log('processing: ', progress);
                 })
@@ -83,7 +55,7 @@ function hlsConvert(path, video_group_unique_id, unique_id, m3u8_name, callback)
                     }
                     console.log(data.log);
                     socket.emit('ffmpeg-progress', data);
-                    ffmpegWorkSwitch(false, () => { //스트리밍 컨버트 작업 여부 false
+                    ffmpegWorkSwitch(false, () => {
                         var data = {
                             log: `===== [${origin_f_name}] Processing Finished! =====`
                         }
@@ -138,9 +110,8 @@ function deleteFolderRecursive(path) {
 }
 
 module.exports = {
-    encrypt,
-    systemInfo,
     hlsConvert,
     deleteFolderRecursive,
-    getStateJson
+    getStateJson,
+    generateThumbnail
 }

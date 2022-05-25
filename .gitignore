@@ -4,3 +4,4 @@ hls/*.ts
 hls/*.m3u8
 
 temp/img*
+.env
